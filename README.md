@@ -46,6 +46,9 @@ python -m http.server 8807
 
 本仓库已部署到 GitHub Pages（Settings → Pages → Source: `main` 分支根目录，`build_type: legacy`），
 推送 `main` 分支后会自动重新发布，无需任何构建步骤。
+
+注意 GitHub Pages 的静态资源带 `Cache-Control: max-age=600`，改完 CSS 或 JS 后浏览器可能还要
+等最多十分钟才取到新版本；调试时用无缓存的服务（或强制刷新）可以立刻看到改动。
 换一个仓库时：把内容推到仓库根目录，再把 Pages 的 Source 指向该分支根目录即可。
 
 ## 三层结构
