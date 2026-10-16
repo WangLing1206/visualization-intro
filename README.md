@@ -1,5 +1,7 @@
 # 《可视化导论》课程实践学习网站
 
+线上地址：<https://wangling1206.github.io/visualization-intro/>
+
 一个纯静态的双语课程网站：十一章正文、三十三张实时绘制的交互图、中英文一键切换。
 **没有构建步骤，没有依赖安装，双击 `index.html` 就能打开。**
 
@@ -42,8 +44,9 @@ python -m http.server 8807
 # 然后访问 http://127.0.0.1:8807/
 ```
 
-部署到 GitHub Pages：把 `website/` 目录推到仓库，在仓库设置里把 Pages 的
-Source 指向该目录（或把内容放到 `docs/` 分支目录）即可，无需任何构建。
+本仓库已部署到 GitHub Pages（Settings → Pages → Source: `main` 分支根目录，`build_type: legacy`），
+推送 `main` 分支后会自动重新发布，无需任何构建步骤。
+换一个仓库时：把内容推到仓库根目录，再把 Pages 的 Source 指向该分支根目录即可。
 
 ## 三层结构
 
