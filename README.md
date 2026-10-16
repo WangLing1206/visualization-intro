@@ -27,8 +27,11 @@ website/
 │  └─ content/           十一章正文数据（中英双语、代码、图注）
 ├─ data/land.js          世界陆地轮廓（Natural Earth 110m 简化，公共领域）
 ├─ vendor/three.min.js   three.js r160 UMD 构建（本地内置，离线可用）
-├─ tools/make_land.py    把 TopoJSON 陆地数据转成 data/land.js
-└─ docs/                 写作规范、亮点说明、演示视频脚本
+├─ tools/
+│  ├─ make_land.py       把 TopoJSON 陆地数据转成 data/land.js
+│  ├─ record-tour.cjs    演示视频录屏：CDP 驱动 Chrome，逐场景抓帧
+│  └─ assemble-video.sh  演示视频合成：按旁白裁切、加分镜标题、混音
+└─ docs/                 写作规范、亮点说明、演示视频旁白稿
 ```
 
 ## 本地运行
@@ -127,3 +130,25 @@ VIZ.figures['fig-xxx'] = {
 - 排版：Spectral + IBM Plex Sans + 思源宋体/黑体（通过 Google Fonts 异步加载，失败时回退系统字体）。
 - 无障碍：键盘可达、焦点可见、正文对比度符合要求，尊重 `prefers-reduced-motion`。
 - 自检页：`dev-figures.html` 一次挂载全部图形，开发时用来检查绘制与交互。
+
+
+## 演示视频是怎么做的
+
+`docs/` 里的旁白稿分八个场景，每个场景一段旁白。流程分三步，都是可重跑的：
+
+```bash
+# 1. 合成旁白（每段一个 mp3，时长决定画面长度）
+#    见 docs/演示视频旁白稿.md 的分段；用 TTS 接口逐段生成到 <工作目录>/audio/
+# 2. 录屏：CDP 启动干净的 Chrome，逐场景驱动站点并抓帧
+set FFMPEG_PATH=<ffmpeg.exe>
+node tools/record-tour.cjs <工作目录>        # 不带场景编号则全部录一遍
+# 3. 合成：按旁白时长裁切 + 左下角分镜标题 + 拼接 + 混音
+bash tools/assemble-video.sh <工作目录> <输出.mp4>
+```
+
+录屏脚本的两个要点，都是踩过坑之后写死的：
+
+- **时间戳用本地时钟**，不要用 `Page.screencastFrame` 的 `metadata.timestamp`——画面静止时它不推进，
+  静态场景会被压缩掉一大段时长。
+- **重采样时先把时间戳减去场景起点**再比较；用绝对时钟直接比相对时间，会让每一帧都落到第一帧上，
+  整段视频变成一张静止画面（脚本里加了「用到多少个源帧」的兜底告警）。
