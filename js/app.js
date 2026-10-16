@@ -361,13 +361,15 @@
       var target = document.getElementById('sec-' + secIdx);
       // 深链接直接落到该节：用即时定位，避免整章长距离滚动
       if (target) setTimeout(function () {
-        target.scrollIntoView({ behavior: 'auto', block: 'start' });
+        // behavior:'instant' 才会绕过 CSS 的 scroll-behavior:smooth，
+        // 否则滚动会在旧版面上推算终点，落点会偏
+        target.scrollIntoView({ behavior: 'instant', block: 'start' });
         // 网络字体到位后正文会重新排一遍，这里补一次定位，除非读者已经开始滚动
         if (document.fonts && document.fonts.ready) {
           document.fonts.ready.then(function () {
             var t2 = document.getElementById('sec-' + secIdx);
-            if (t2 && Math.abs(t2.getBoundingClientRect().top) > 130) {
-              t2.scrollIntoView({ behavior: 'auto', block: 'start' });
+            if (t2 && Math.abs(t2.getBoundingClientRect().top - (54 + 30)) > 40) {
+              t2.scrollIntoView({ behavior: 'instant', block: 'start' });
             }
           });
         }
