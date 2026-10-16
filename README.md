@@ -31,7 +31,10 @@ website/
 │  ├─ make_land.py       把 TopoJSON 陆地数据转成 data/land.js
 │  ├─ record-tour.cjs    演示视频录屏：CDP 驱动 Chrome，逐场景抓帧
 │  ├─ make-subtitles.py  字幕：用旁白里的真实停顿对齐，生成 ASS / SRT
-│  └─ assemble-video.sh  演示视频合成：裁切、烧字幕、拼接、混音
+│  ├─ assemble-video.sh  演示视频合成：裁切、烧字幕、拼接、混音
+│  ├─ shoot-doc.cjs      文档配图：CDP 摆好站点状态后逐张截 1600×900 PNG
+│  ├─ build-docx.py      生成亮点说明 Word 文档（格式对齐上一次作业）
+│  └─ assets/            校徽（文档封面用）
 └─ docs/                 写作规范、亮点说明、演示视频旁白稿
 ```
 
