@@ -140,7 +140,7 @@
 .sec > p, .sec > ul, .sec > ol, .sec > h3, .sec > blockquote,
 .sec > table, .sec > .note, .sec > .quote, .sec > .kit-hint { max-width: var(--measure); }
 
-.sec { padding-top: 8px; scroll-margin-top: calc(var(--bar-h) + 30px); }
+.sec { padding-top: 8px; }   /* 定位偏移统一由 html 的 scroll-padding-top 负责，避免与 scroll-margin 叠加 */
 .sec + .sec { margin-top: 62px; }
 .sec-head { border-top: 1px solid var(--rule); padding-top: 14px; margin-bottom: 22px; }
 .sec-num { font-family: var(--mono); font-size: var(--fs-caption); color: var(--spot); }
