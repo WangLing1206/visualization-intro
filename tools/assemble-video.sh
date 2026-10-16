@@ -15,7 +15,8 @@ FF="${FFMPEG_PATH:?需要设置 FFMPEG_PATH}"
 mkdir -p "$DIR/cut" "$DIR/wav"
 # 把字体复制到工作目录，用不带盘符的相对路径引用：
 # ffmpeg 的 filter 语法里 Windows 路径的冒号极易踩坑，这是最省事的绕法
-cp "$(cygpath -u "${FONT_SRC:-C:/Windows/Fonts/simhei.ttf}")" "$DIR/caption.ttf"
+mkdir -p "$DIR/fonts"
+cp "$(cygpath -u "${FONT_SRC:-C:/Windows/Fonts/simhei.ttf}")" "$DIR/fonts/caption.ttf"
 FONT="caption.ttf"
 cd "$DIR"
 
@@ -46,7 +47,7 @@ for i in 1 2 3 4 5 6 7 8; do
   D=$(python -c "import json;print(json.load(open('$DIR/scene_durations.json'))[$i-1])")
   T="${TITLES[$i-1]}"
   "$FF" -y -hide_banner -loglevel error -i "$DIR/scene$i.mp4" -t "$D" \
-    -vf "drawtext=fontfile=${FONT}:text=${T}:fontcolor=white:fontsize=26:x=64:y=h-96:box=1:boxcolor=black@0.42:boxborderw=16:enable='between(t,0.8,6.2)'" \
+    -vf "drawtext=fontfile=${FONT}:text=${T}:fontcolor=white:fontsize=26:x=64:y=48:box=1:boxcolor=black@0.45:boxborderw=16:enable='between(t,0.6,6.4)',ass=subs/s$i.ass:fontsdir=fonts" \
     -c:v libx264 -preset medium -crf 22 -pix_fmt yuv420p -r 30 -an "$DIR/cut/c$i.mp4"
   # 旁白：补齐到同样的时长
   "$FF" -y -hide_banner -loglevel error -i "$DIR/audio/s$i.mp3" \
@@ -56,7 +57,7 @@ done
 
 # 末尾一张：网址提示（叠在最后一个场景上）
 "$FF" -y -hide_banner -loglevel error -i "$DIR/cut/c8.mp4" \
-  -vf "drawtext=fontfile=${FONT}:text=wangling1206.github.io/visualization-intro:fontcolor=white:fontsize=24:x=(w-text_w)/2:y=h-150:box=1:boxcolor=black@0.5:boxborderw=14:enable='gte(t,5)'" \
+  -vf "drawtext=fontfile=${FONT}:text=wangling1206.github.io/visualization-intro:fontcolor=white:fontsize=26:x=(w-text_w)/2:y=64:box=1:boxcolor=black@0.5:boxborderw=14:enable='gte(t,9)',ass=subs/s8.ass:fontsdir=fonts" \
   -c:v libx264 -preset medium -crf 22 -pix_fmt yuv420p -an "$DIR/cut/c8b.mp4"
 mv "$DIR/cut/c8b.mp4" "$DIR/cut/c8.mp4"
 
@@ -69,8 +70,10 @@ done
 "$FF" -y -hide_banner -loglevel error -f concat -safe 0 -i "$DIR/vlist.txt" -c copy "$DIR/_video.mp4"
 "$FF" -y -hide_banner -loglevel error -f concat -safe 0 -i "$DIR/alist.txt" -c copy "$DIR/_audio.wav"
 
-# 合流
-"$FF" -y -hide_banner -loglevel error -i "$DIR/_video.mp4" -i "$DIR/_audio.wav" \
-  -c:v copy -c:a aac -b:a 128k -shortest -movflags +faststart "$OUT"
+# 合流：视频 + 旁白 + 一份可开关的字幕轨（软字幕，播放器里能关掉）
+"$FF" -y -hide_banner -loglevel error -i "$DIR/_video.mp4" -i "$DIR/_audio.wav" -i "$DIR/subs/all.srt" \
+  -map 0:v -map 1:a -map 2:s -c:v copy -c:a aac -b:a 128k -c:s mov_text \
+  -metadata:s:s:0 language=chi -metadata:s:s:0 title="中文旁白字幕" \
+  -shortest -movflags +faststart "$OUT"
 echo "完成：$OUT"
 "$FF" -hide_banner -i "$OUT" 2>&1 | grep -E "Duration|Stream #"

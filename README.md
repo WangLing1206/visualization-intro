@@ -30,7 +30,8 @@ website/
 ├─ tools/
 │  ├─ make_land.py       把 TopoJSON 陆地数据转成 data/land.js
 │  ├─ record-tour.cjs    演示视频录屏：CDP 驱动 Chrome，逐场景抓帧
-│  └─ assemble-video.sh  演示视频合成：按旁白裁切、加分镜标题、混音
+│  ├─ make-subtitles.py  字幕：用旁白里的真实停顿对齐，生成 ASS / SRT
+│  └─ assemble-video.sh  演示视频合成：裁切、烧字幕、拼接、混音
 └─ docs/                 写作规范、亮点说明、演示视频旁白稿
 ```
 
@@ -137,14 +138,21 @@ VIZ.figures['fig-xxx'] = {
 `docs/` 里的旁白稿分八个场景，每个场景一段旁白。流程分三步，都是可重跑的：
 
 ```bash
+set FFMPEG_PATH=<ffmpeg.exe>
 # 1. 合成旁白（每段一个 mp3，时长决定画面长度）
 #    见 docs/演示视频旁白稿.md 的分段；用 TTS 接口逐段生成到 <工作目录>/audio/
 # 2. 录屏：CDP 启动干净的 Chrome，逐场景驱动站点并抓帧
-set FFMPEG_PATH=<ffmpeg.exe>
 node tools/record-tour.cjs <工作目录>        # 不带场景编号则全部录一遍
-# 3. 合成：按旁白时长裁切 + 左下角分镜标题 + 拼接 + 混音
+# 3. 字幕：用旁白里的停顿切句、对齐，生成 subs/s1..8.ass 与 subs/all.srt
+python tools/make-subtitles.py <工作目录> docs/演示视频旁白稿.md "<ffmpeg路径>"
+# 4. 合成：按旁白裁切 + 烧入字幕与分镜标题 + 拼接 + 混音 + 挂一条软字幕轨
 bash tools/assemble-video.sh <工作目录> <输出.mp4>
 ```
+
+字幕的做法：把旁白切成不超过 16 个汉字的短句（长句在标点处断，且不从数字中间断），
+再用 `silencedetect` 找出旁白里的真实停顿当作时间锚点对齐——语音段多于字幕条就把
+停顿最短的相邻段合并，少于就按字数拆分最长的段；每条至少停留 0.7 秒，太短的并进相邻条。
+这样字幕出现和消失都落在人真正开口和收声的地方，而不是按字数平均分配。
 
 录屏脚本的两个要点，都是踩过坑之后写死的：
 
