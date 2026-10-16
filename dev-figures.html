@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>图形自检 / Figure harness — 可视化导论</title>
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/figures.css">
+<style>
+  body { padding: 40px var(--page-pad) 80px; }
+  .dev-head { max-width: var(--wide); margin: 0 auto 30px; border-bottom: 1px solid var(--ink); padding-bottom: 14px; }
+  .dev-head h1 { font-size: 26px; margin-bottom: 8px; }
+  .dev-head p { font-family: var(--sans); font-size: var(--fs-small); color: var(--ink-3); margin: 0; }
+  .dev-list { max-width: var(--wide); margin: 0 auto; }
+  .dev-item { padding: 26px 0 34px; border-bottom: 1px solid var(--rule); }
+  .dev-item > h2 { font-family: var(--mono); font-size: 13px; color: var(--spot); margin-bottom: 14px; letter-spacing: .04em; }
+  .dev-item .fig { margin: 0; }
+  .dev-item .fig-cap { color: var(--ink-3); }
+  .dev-switch { position: fixed; right: 18px; top: 14px; z-index: 20; }
+</style>
+</head>
+<body>
+<div class="dev-head">
+  <h1>图形自检页 · Figure harness</h1>
+  <p>本页按注册顺序挂载 <code>VIZ.figures</code> 中的全部交互图，用于开发期检查。不属于课程内容。</p>
+</div>
+<div class="dev-list" id="dev-list"></div>
+<div class="dev-switch"><span class="lang-toggle"><button data-lang="zh" aria-pressed="true">中文</button><button data-lang="en" aria-pressed="false">EN</button></span></div>
+
+<script src="data/land.js"></script>
+<script src="js/kit.js"></script>
+<script src="js/figures/thumbs.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/content/ch01.js"></script>
+<script src="js/content/ch02.js"></script>
+<script src="js/content/ch03.js"></script>
+<script src="js/content/ch04.js"></script>
+<script src="js/content/ch05.js"></script>
+<script src="js/content/ch06.js"></script>
+<script src="js/content/ch07.js"></script>
+<script src="js/content/ch08.js"></script>
+<script src="js/content/ch09.js"></script>
+<script src="js/content/ch10.js"></script>
+<script src="js/content/ch11.js"></script>
+<script src="js/figures/overview.js"></script>
+<script src="js/figures/perception.js"></script>
+<script src="js/figures/data.js"></script>
+<script src="js/figures/tasks.js"></script>
+<script src="js/figures/design.js"></script>
+<script src="js/figures/highdim.js"></script>
+<script src="js/figures/time.js"></script>
+<script src="js/figures/geo.js"></script>
+<script src="js/figures/network.js"></script>
+<script src="js/figures/interaction.js"></script>
+<script src="js/figures/evaluation.js"></script>
+<script>
+(function () {
+  var VIZ = window.VIZ, I = VIZ.i18n, K = VIZ.kit;
+  var mounted = [];
+  function el(t, c, h) { var e = document.createElement(t); if (c) e.className = c; if (h != null) e.innerHTML = h; return e; }
+  function render() {
+    mounted.forEach(function (m) { try { m.inst && m.inst.destroy && m.inst.destroy(); } catch (e) { } });
+    mounted = [];
+    var host = document.getElementById('dev-list');
+    host.innerHTML = '';
+    Object.keys(VIZ.figures).sort().forEach(function (id) {
+      var f = VIZ.figures[id];
+      var wrap = el('div', 'dev-item');
+      wrap.appendChild(el('h2', null, id + ' — ' + (f[I.lang] || f.zh || '')));
+      var fig = el('figure', 'fig');
+      var top = el('div', 'fig-top');
+      top.appendChild(el('span', 'fig-name', K.esc(f[I.lang] || f.zh || '')));
+      if (f.hint) top.appendChild(el('span', 'fig-hint', K.esc(f.hint[I.lang] || f.hint.zh)));
+      fig.appendChild(top);
+      var body = el('div', 'fig-body');
+      fig.appendChild(body);
+      fig.appendChild(el('figcaption', 'fig-cap', '<span class="cap-n">图 x.1</span>自检页用于检查图形的绘制与交互是否正常。'));
+      wrap.appendChild(fig);
+      host.appendChild(wrap);
+      var inst = null;
+      try { inst = f.mount(body, { lang: I.lang, kit: K }); }
+      catch (e) { body.appendChild(el('div', 'kit-hint', 'figure error: ' + e.message)); console.error(id, e); }
+      mounted.push({ id: id, inst: inst });
+    });
+    document.documentElement.lang = I.lang;
+  }
+  document.querySelectorAll('.lang-toggle button').forEach(function (b) {
+    b.addEventListener('click', function () { I.set(b.dataset.lang); });
+  });
+  I.onChange(function () { render(); });
+  I.init();
+  render();
+  window.__devCount = Object.keys(VIZ.figures).length;
+})();
+</script>
+</body>
+</html>

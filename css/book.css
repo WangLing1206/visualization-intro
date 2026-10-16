@@ -1,0 +1,279 @@
+/* ==========================================================================
+   book.css — 正文版式：左栏书目、正文栏、图版可溢出到宽的栏宽
+   ========================================================================== */
+
+.book {
+  max-width: calc(var(--rail) + var(--gutter) + var(--wide) + var(--page-pad) * 2);
+  margin: 0 auto;
+  padding: calc(var(--bar-h) + 54px) var(--page-pad) 0;
+  display: grid;
+  grid-template-columns: var(--rail) minmax(0, 1fr);
+  gap: 0 var(--gutter);
+  align-items: start;
+}
+
+/* 左栏 ------------------------------------------------------------------ */
+.rail {
+  position: sticky;
+  top: calc(var(--bar-h) + 26px);
+  max-height: calc(100vh - var(--bar-h) - 60px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  font-family: var(--sans);
+  padding-bottom: 30px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--rule-2) transparent;
+}
+.rail::-webkit-scrollbar { width: 6px; }
+.rail::-webkit-scrollbar-thumb { background: var(--rule-2); }
+.rail-head {
+  font-family: var(--mono);
+  font-size: var(--fs-micro);
+  letter-spacing: 0.1em;
+  color: var(--ink-4);
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 10px;
+}
+.rail-chapter {
+  display: flex;
+  gap: 9px;
+  align-items: baseline;
+  padding: 7px 0 7px 11px;
+  position: relative;
+  color: var(--ink-3);
+  font-size: var(--fs-small);
+  line-height: 1.5;
+  transition: color 0.24s var(--ease);
+}
+.rail-chapter:hover { color: var(--ink); }
+.rail-chapter[aria-current="true"] { color: var(--ink); font-weight: 500; }
+.rail-chapter[aria-current="true"]::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 12px; bottom: 12px;
+  width: 2px;
+  background: var(--spot);
+}
+.rail-chapter .n { font-family: var(--mono); font-size: var(--fs-micro); color: var(--ink-4); }
+.rail-chapter[aria-current="true"] .n { color: var(--spot); }
+
+.rail-secs {
+  list-style: none;
+  margin: 4px 0 12px;
+  padding: 0 0 0 11px;
+  border-left: 1px solid var(--rule);
+  margin-left: 3px;
+}
+.rail-secs a {
+  display: block;
+  padding: 4px 0 4px 10px;
+  font-size: var(--fs-caption);
+  color: var(--ink-4);
+  line-height: 1.5;
+  transition: color 0.24s var(--ease);
+}
+.rail-secs a:hover { color: var(--ink); }
+.rail-secs a.is-on { color: var(--spot); }
+.rail-secs a .dot {
+  display: inline-block;
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: currentColor;
+  vertical-align: 2px;
+  margin-right: 7px;
+  opacity: 0.5;
+}
+.rail-foot {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--rule);
+  font-size: var(--fs-caption);
+  color: var(--ink-4);
+  line-height: 1.7;
+}
+
+/* 章节头 ---------------------------------------------------------------- */
+.chapter-head { border-bottom: 1px solid var(--ink); padding-bottom: 28px; margin-bottom: 40px; }
+.chapter-kicker {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  font-family: var(--mono);
+  font-size: var(--fs-caption);
+  color: var(--spot);
+  margin-bottom: 16px;
+}
+.chapter-kicker .of { color: var(--ink-4); }
+.chapter-title { font-size: var(--fs-h1); max-width: 22ch; }
+.chapter-title-en {
+  font-family: var(--sans);
+  font-size: var(--fs-caption);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-4);
+  margin-top: 12px;
+  line-height: 1.6;
+}
+.chapter-lead {
+  margin-top: 22px;
+  font-size: var(--fs-lead);
+  line-height: 1.78;
+  color: var(--ink-2);
+  max-width: 40ch;
+}
+.chapter-lead p { margin-bottom: 0.7em; }
+.chapter-meta {
+  display: flex;
+  gap: 26px;
+  flex-wrap: wrap;
+  margin-top: 26px;
+  font-family: var(--sans);
+  font-size: var(--fs-caption);
+  color: var(--ink-3);
+}
+.chapter-meta b { font-weight: 500; color: var(--ink); }
+
+/* 正文：文本栏窄、图版栏宽——两者不同宽，是这本书的基本节奏 */
+.prose { max-width: var(--wide); }
+.prose > * { max-width: var(--wide); }
+.sec > p, .sec > ul, .sec > ol, .sec > h3, .sec > blockquote,
+.sec > table, .sec > .note, .sec > .quote, .sec > .kit-hint { max-width: var(--measure); }
+
+.sec { padding-top: 8px; scroll-margin-top: calc(var(--bar-h) + 30px); }
+.sec + .sec { margin-top: 62px; }
+.sec-head { border-top: 1px solid var(--rule); padding-top: 14px; margin-bottom: 22px; }
+.sec-num { font-family: var(--mono); font-size: var(--fs-caption); color: var(--spot); }
+.sec-title { font-size: var(--fs-h2); margin-top: 6px; }
+.sec-title-alt {
+  font-family: var(--sans);
+  font-size: var(--fs-caption);
+  color: var(--ink-4);
+  margin-top: 7px;
+  line-height: 1.5;
+}
+
+.prose h3 { font-size: var(--fs-h3); margin: 34px 0 12px; }
+.prose p { margin-bottom: 1.05em; }
+.prose strong { font-weight: 600; }
+.prose em { font-style: italic; }
+.prose .term { border-bottom: 1px solid var(--rule-2); }
+.prose code {
+  font-size: 0.88em;
+  background: var(--paper-sunk);
+  padding: 1px 5px;
+  border-radius: 2px;
+  border: 1px solid var(--rule);
+}
+.prose a { border-bottom: 1px solid var(--rule-2); transition: border-color 0.2s var(--ease); }
+.prose a:hover { border-color: var(--spot); }
+
+/* 列表：用短横线做项目符号，不用大黑点 */
+.prose ul, .prose ol { margin: 0 0 1.15em; padding-left: 0; list-style: none; }
+.prose li { position: relative; padding-left: 22px; margin-bottom: 0.5em; }
+.prose ul > li::before {
+  content: "";
+  position: absolute;
+  left: 1px; top: 0.78em;
+  width: 9px; height: 1px;
+  background: var(--ink-3);
+}
+.prose ol { counter-reset: li; }
+.prose ol > li { counter-increment: li; }
+.prose ol > li::before {
+  content: counter(li) ".";
+  position: absolute;
+  left: 0; top: 0;
+  font-family: var(--mono);
+  font-size: 0.82em;
+  color: var(--spot);
+  line-height: calc(var(--lh-body) * 1.2);
+}
+
+/* 引语 ------------------------------------------------------------------ */
+.quote {
+  border-left: 1px solid var(--rule-2);
+  padding: 2px 0 2px 22px;
+  margin: 26px 0;
+  color: var(--ink-2);
+}
+.quote p { margin-bottom: 0.5em; }
+.quote cite {
+  display: block;
+  font-family: var(--sans);
+  font-size: var(--fs-caption);
+  font-style: normal;
+  color: var(--ink-4);
+}
+
+/* 小字注（仅用一条竖线区分，不用色块） ---------------------------------- */
+.note {
+  border-left: 2px solid var(--ink);
+  padding: 2px 0 2px 18px;
+  margin: 26px 0;
+  font-family: var(--sans);
+  font-size: var(--fs-small);
+  line-height: 1.78;
+  color: var(--ink-2);
+}
+.note .note-tag {
+  font-family: var(--mono);
+  font-size: var(--fs-micro);
+  color: var(--spot);
+  letter-spacing: 0.08em;
+  display: block;
+  margin-bottom: 5px;
+}
+
+/* 表格：只有横线 -------------------------------------------------------- */
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 24px 0;
+  font-family: var(--sans);
+  font-size: var(--fs-small);
+}
+.prose th, .prose td {
+  text-align: left;
+  padding: 9px 16px 10px 0;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+  line-height: 1.6;
+}
+.prose thead th { border-bottom: 1px solid var(--ink); font-weight: 500; }
+.prose tbody tr:last-child td { border-bottom: 1px solid var(--rule-2); }
+.prose th:last-child, .prose td:last-child { padding-right: 0; }
+.prose td .mono-label { display: block; margin-top: 2px; }
+
+/* 上下页 ----------------------------------------------------------------- */
+.pager {
+  margin-top: 76px;
+  border-top: 1px solid var(--ink);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+}
+.pager a { padding: 20px 0 26px; display: block; }
+.pager a:last-child { text-align: right; }
+.pager .dir {
+  font-family: var(--mono);
+  font-size: var(--fs-micro);
+  color: var(--ink-4);
+  letter-spacing: 0.08em;
+}
+.pager .ttl { font-size: 19px; margin-top: 8px; transition: color 0.24s var(--ease); }
+.pager a:hover .ttl { color: var(--spot); }
+.pager .sub { font-family: var(--sans); font-size: var(--fs-caption); color: var(--ink-4); margin-top: 4px; }
+.pager a.is-empty { visibility: hidden; }
+
+@media (max-width: 1040px) {
+  .book { grid-template-columns: minmax(0, 1fr); }
+  .rail { display: none; }
+  .prose, .prose > * { max-width: var(--measure); }
+}
+@media (max-width: 620px) {
+  .book { padding-top: calc(var(--bar-h) + 30px); }
+  .chapter-title { font-size: 28px; }
+  .pager { grid-template-columns: 1fr; }
+  .pager a:last-child { text-align: left; border-top: 1px solid var(--rule); }
+}

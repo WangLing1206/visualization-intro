@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>可视化导论 · 课程实践学习网站</title>
+<meta name="description" content="《可视化导论》课程实践学习网站：按章组织知识、代码与可交互图形，支持中英文切换，适合学生对照自学。">
+<meta name="theme-color" content="#000000">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23000'/%3E%3Cpath d='M6 23 L12 11 L18 23 L24 11' stroke='%23fff' fill='none' stroke-width='2'/%3E%3Ccircle cx='12' cy='11' r='2.4' fill='%23b4232a'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" media="print" onload="this.media='all'"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Noto+Sans+SC:wght@400;500&family=Noto+Serif+SC:wght@400;600&family=Spectral:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/cover.css">
+<link rel="stylesheet" href="css/home.css">
+<link rel="stylesheet" href="css/book.css">
+<link rel="stylesheet" href="css/figures.css">
+</head>
+<body>
+<a class="skip-link" href="#main" data-i18n="a11y.skip">跳到正文</a>
+<div class="progress" id="progress" aria-hidden="true"></div>
+
+<header class="bar" id="bar">
+  <a class="bar-mark" href="#/">
+    <b data-i18n="brand.main">可视化导论</b>
+    <span class="bar-mark-quiet" data-i18n="brand.alt">Introduction to Visualization</span>
+  </a>
+  <span class="bar-spacer"></span>
+  <nav class="bar-nav">
+    <a class="bar-link" href="#/" data-i18n="nav.contents">目录</a>
+    <a class="bar-link bar-link-hide-sm" href="#/notes" data-i18n="nav.notes">课程说明</a>
+    <button class="bar-link bar-link-hide-sm" type="button" id="search-open" aria-keyshortcuts="/">
+      <span data-i18n="nav.search">检索</span>
+      <kbd class="mono-label" style="margin-left:5px">/</kbd>
+    </button>
+    <div class="lang-toggle" role="group" aria-label="Language">
+      <button type="button" data-lang="zh" aria-pressed="true">中文</button>
+      <button type="button" data-lang="en" aria-pressed="false">EN</button>
+    </div>
+  </nav>
+</header>
+
+<main id="main">
+  <!-- ============================ 首页 ============================ -->
+  <section class="view is-on" id="view-home" data-view="home">
+
+    <header class="cover" id="cover">
+      <canvas class="cover-canvas" id="cover-canvas" aria-hidden="true"></canvas>
+      <div class="cover-veil" aria-hidden="true"></div>
+      <div class="cover-marks" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+
+      <p class="cover-fig" id="cover-fig"></p>
+
+      <nav class="cover-stages" id="cover-stages" aria-label="Data states"></nav>
+
+      <div class="cover-inner">
+        <div class="cover-rule" aria-hidden="true"></div>
+        <h1 class="cover-title" id="cover-title"></h1>
+        <span class="cover-title-en" id="cover-title-en"></span>
+        <p class="cover-sub" data-i18n="cover.sub"></p>
+        <div class="cover-actions">
+          <a class="btn btn-solid" href="#/ch/01">
+            <span data-i18n="cover.enter">开始阅读</span><span class="arw" aria-hidden="true">→</span>
+          </a>
+          <a class="btn" href="#contents">
+            <span data-i18n="cover.toc">浏览目录</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="cover-foot">
+        <span class="credit" data-i18n="cover.credit"></span>
+        <a class="scroll-cue" href="#contents">
+          <span data-i18n="cover.scroll">向下滚动</span><span class="track" aria-hidden="true"></span>
+        </a>
+      </div>
+    </header>
+
+    <div class="page" id="contents">
+      <div class="masthead">
+        <div class="masthead-l">
+          <h2 class="sec-title" data-i18n="contents.title">目录</h2>
+          <span class="sec-note" id="contents-note"></span>
+        </div>
+        <p class="sec-lead" data-i18n="contents.lead"></p>
+      </div>
+      <nav class="toc" id="toc" aria-label="Contents"></nav>
+    </div>
+
+    <section class="demo" id="demo-sec">
+      <div class="demo-inner">
+        <div class="demo-head">
+          <div>
+            <h2 class="demo-title" data-i18n="demo.title"></h2>
+          </div>
+          <p class="demo-desc" data-i18n="demo.desc"></p>
+        </div>
+        <div class="demo-frame">
+          <canvas id="demo-canvas"></canvas>
+        </div>
+        <div class="demo-foot">
+          <div class="demo-tabs" id="demo-tabs" role="group" aria-label="Encodings"></div>
+          <div class="demo-legend" id="demo-legend"></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="page">
+      <section class="how">
+        <div class="masthead">
+          <div class="masthead-l">
+            <h2 class="sec-title" data-i18n="how.title"></h2>
+            <span class="sec-note" data-i18n="how.note"></span>
+          </div>
+          <p class="sec-lead" data-i18n="how.lead"></p>
+        </div>
+        <div class="how-grid">
+          <div class="how-cell">
+            <div class="how-kind" data-i18n="how.1.kind"></div>
+            <h3 data-i18n="how.1.t"></h3>
+            <p data-i18n="how.1.d"></p>
+            <div class="how-mark" data-i18n="how.1.m"></div>
+          </div>
+          <div class="how-cell">
+            <div class="how-kind" data-i18n="how.2.kind"></div>
+            <h3 data-i18n="how.2.t"></h3>
+            <p data-i18n="how.2.d"></p>
+            <div class="how-mark" data-i18n="how.2.m"></div>
+          </div>
+          <div class="how-cell">
+            <div class="how-kind" data-i18n="how.3.kind"></div>
+            <h3 data-i18n="how.3.t"></h3>
+            <p data-i18n="how.3.d"></p>
+            <div class="how-mark" data-i18n="how.3.m"></div>
+          </div>
+        </div>
+        <div class="facts" id="facts"></div>
+      </section>
+    </div>
+  </section>
+
+  <!-- ============================ 章节页 ============================ -->
+  <section class="view" id="view-chapter" data-view="chapter">
+    <div class="book">
+      <aside class="rail" id="rail"></aside>
+      <article class="prose" id="chapter-body"></article>
+    </div>
+  </section>
+
+  <!-- ============================ 课程说明 ============================ -->
+  <section class="view" id="view-notes" data-view="notes">
+    <div class="book">
+      <aside class="rail" id="rail-notes"></aside>
+      <article class="prose" id="notes-body"></article>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="foot-inner">
+    <div>
+      <div class="foot-mark" data-i18n="foot.mark"></div>
+      <div class="foot-rule"></div>
+      <p data-i18n="foot.about"></p>
+    </div>
+    <div>
+      <h4 data-i18n="foot.ref"></h4>
+      <p data-i18n="foot.ref1"></p>
+      <p data-i18n="foot.ref2"></p>
+    </div>
+    <div>
+      <h4 data-i18n="foot.stack"></h4>
+      <p data-i18n="foot.stack1"></p>
+      <p data-i18n="foot.stack2"></p>
+    </div>
+  </div>
+  <div class="foot-fine" style="max-width:var(--wide);margin:0 auto">
+    <span data-i18n="foot.fine1"></span>
+    <span id="foot-fine2"></span>
+  </div>
+</footer>
+
+<div class="search" id="search" role="dialog" aria-modal="true" aria-label="Search">
+  <div class="search-box">
+    <input class="search-input" id="search-input" type="search" autocomplete="off" spellcheck="false">
+    <div class="search-meta" id="search-meta"></div>
+    <div class="search-list" id="search-list"></div>
+  </div>
+</div>
+
+<script src="vendor/three.min.js" defer></script>
+<script src="data/land.js" defer></script>
+<script src="js/kit.js" defer></script>
+<script src="js/i18n.js" defer></script>
+<script src="js/figures/thumbs.js" defer></script>
+<script src="js/figures/overview.js" defer></script>
+<script src="js/figures/perception.js" defer></script>
+<script src="js/figures/data.js" defer></script>
+<script src="js/figures/tasks.js" defer></script>
+<script src="js/figures/design.js" defer></script>
+<script src="js/figures/highdim.js" defer></script>
+<script src="js/figures/time.js" defer></script>
+<script src="js/figures/geo.js" defer></script>
+<script src="js/figures/network.js" defer></script>
+<script src="js/figures/interaction.js" defer></script>
+<script src="js/figures/evaluation.js" defer></script>
+<script src="js/content/ch01.js" defer></script>
+<script src="js/content/ch02.js" defer></script>
+<script src="js/content/ch03.js" defer></script>
+<script src="js/content/ch04.js" defer></script>
+<script src="js/content/ch05.js" defer></script>
+<script src="js/content/ch06.js" defer></script>
+<script src="js/content/ch07.js" defer></script>
+<script src="js/content/ch08.js" defer></script>
+<script src="js/content/ch09.js" defer></script>
+<script src="js/content/ch10.js" defer></script>
+<script src="js/content/ch11.js" defer></script>
+<script src="js/notes.js" defer></script>
+<script src="js/hero.js" defer></script>
+<script src="js/demo.js" defer></script>
+<script src="js/app.js" defer></script>
+</body>
+</html>
